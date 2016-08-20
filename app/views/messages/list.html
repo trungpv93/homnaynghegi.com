@@ -1,0 +1,26 @@
+{% extends 'layouts/default.html' %}
+{% import 'macros.html' as macros %}
+
+{% block embed %}
+
+  <div class="page-header">
+    <h1>
+      Messages
+      <small>
+        {{ messagesCount }} total
+      </small>
+    </h1>
+  </div>
+
+  {{ macros.renderPaginator(paginator) }}
+
+  {% for message in messages %}
+    {{ macros.renderMessagePanel(ctx, message, '/messages') }}
+  {% endfor %}
+
+  {{ macros.renderPaginator(paginator) }}
+
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

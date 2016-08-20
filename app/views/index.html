@@ -1,0 +1,76 @@
+{% extends 'layouts/default.html' %}
+{% import 'macros.html' as macros %}
+
+{% block before_container %}
+<div class="Search-Content">
+  <div class="container-fluid">
+    <div class="page-header" id="banner">
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+        <form action="/urls" method="POST">
+          <div class="form-group">
+            <input type="text" class="form-control" id="url" name="url" placeholder="Search or paste URL" value="{{ ctx.flash.params.url or '' }}" required>
+            <div class="help-block">
+                Note: There is a 5 second ratelimit.
+              </div>
+          </div>
+          {% if config.RECAPTCHA_SYSTEM_ONLINE %}
+              <div class="form-group">
+                <div class="g-recaptcha recaptcha-center" data-sitekey="{{ recaptchaSitekey }}" data-callback="recaptchaSuccessCallback"></div>
+              </div>
+            {% else %}
+              <div class="alert alert-warning">
+                Recaptcha unconfigured
+              </div>
+            {% endif %}
+
+             <button class="btn btn-default disabled" id="url-submit">
+              Submit
+              {% if not ctx.currUser %}
+                anonymously
+              {% else %}
+                as {{ ctx.currUser.uname }}
+              {% endif %}
+            </button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block embed %}
+<div class="row">
+  <div class="col-md-12">
+    
+    {% if urls.length == 0 %}
+        No urls. Wanna be the first?
+      {% endif %}
+
+      {% if urls.length > 0 %}
+        {% for url in urls %}
+          {{ macros.renderURLPanel(ctx, url, '/') }}
+        {% endfor %}
+      {% endif %}
+
+    <ul class="pager">
+      <li><a href="#"><i class="fa fa-angle-left" aria-hidden="true"></i> Previous</a></li>
+      <li><a href="#">Next <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+    </ul>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script type="text/javascript">
+    function recaptchaSuccessCallback() {
+      $('#url-submit')
+        .removeClass('disabled')
+        .addClass('btn-success');
+    }
+  </script>
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}

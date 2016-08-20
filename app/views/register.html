@@ -1,0 +1,71 @@
+{% extends 'layouts/default.html' %} {% block embed %}
+<div class="row">
+  <div class="col-lg-6 col-lg-offset-3">
+    <form action="/users" method="POST">
+      <h2>Register</h2>
+      <p>Keep an eye on the website.</p>
+      <div class="form-group">
+        <label for="inputEmail" class="control-label">Username</label>
+        <input type="text" name="uname" id="uname-input" class="form-control" required value={{ ctx.flash.params.uname or '' }}>
+        <div class="help-block">
+          <p class="pull-right" id="uname-counter">0/15</p>
+          Must be 3-15 chars long
+          <br> Valid chars:
+          <code>a-z</code>, <code>0-9</code>, underscore (<code>_</code>), hyphen (<code>-</code>)
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword" class="control-label">Password</label>
+        <input type="password" name="password1" id="password1-input" class="form-control" required>
+        <div class="help-block">
+          Must be at least 6 chars long
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputConfirmPassword" class="control-label">Confirm Password</label>
+        <input type="password" name="password2" id="password2-input" class="form-control" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="remember-me" id="remember-me-input" checked>
+            Remember Me?
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputEmail" class="control-label">Email</label>
+        <input type="email" name="email" id="email-input" class="form-control">
+      </div>
+      {% if config.RECAPTCHA_SYSTEM_ONLINE %}
+      <div class="form-group">
+        <label for="inputHumanTest" class="control-label">Human Test</label>
+        <div class="g-recaptcha" data-sitekey="{{ recaptchaSitekey }}" data-callback="recaptchaSuccessCallback"></div>
+      </div>
+      {% else %}
+      <div class="form-group">
+        <label for="inputHumanTest" class="control-label">Human Test</label>
+        <div class="alert alert-warning text-center">
+          Recaptcha unconfigured
+        </div>
+      </div>
+      {% endif %}
+      <div class="form-group">
+        <button type="submit" class="btn btn-default disabled but-clickable" id="login-submit">Register</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} {% block scripts %}
+<script type="text/javascript">
+  $('#uname-input').focusEnd().counter('#uname-counter', 3, 15);
+
+  function recaptchaSuccessCallback() {
+    $('#login-submit')
+    .removeClass('btn-default')
+    .removeClass('disabled')
+    .addClass('btn-primary')
+  }
+</script>
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}

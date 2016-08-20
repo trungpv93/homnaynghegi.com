@@ -1,0 +1,54 @@
+{% extends 'layouts/default.html' %} {% block embed %}
+<div class="row">
+  <div class="col-lg-6 col-lg-offset-3">
+    <form action="/login" method="POST">
+    <h2>Login</h2>
+      <p>Welcome Back ;)</p>
+      <div class="form-group">
+        <label for="inputEmail" class="control-label">Username</label>
+        <input type="text" name="uname" id="uname-input" class="form-control" required value={{ ctx.flash.params.uname or '' }}>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword" class="control-label">Password</label>
+        <input type="password" name="password" id="password-input" class="form-control" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="remember-me" id="remember-me-input" checked>
+            Remember Me?
+          </label>
+        </div>
+      </div>
+      {% if config.RECAPTCHA_SYSTEM_ONLINE %}
+      <div class="form-group">
+        <label for="inputHumanTest" class="control-label">Human Test</label>
+        <div class="g-recaptcha" data-sitekey="{{ recaptchaSitekey }}" data-callback="recaptchaSuccessCallback"></div>
+      </div>
+      {% else %}
+      <div class="form-group">
+        <label for="inputHumanTest" class="control-label">Human Test</label>
+        <div class="alert alert-warning text-center">
+          Recaptcha unconfigured
+        </div>
+      </div>
+      {% endif %}
+      <div class="form-group">
+        <button type="submit" class="btn btn-default disabled but-clickable" id="login-submit">Login</button>            
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %} {% block scripts %}
+<script type="text/javascript">
+  $('#uname-input').focusEnd();
+
+  function recaptchaSuccessCallback() {
+    $('#login-submit')
+    .removeClass('btn-default')
+    .removeClass('disabled')
+    .addClass('btn-primary')
+  }
+</script>
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}

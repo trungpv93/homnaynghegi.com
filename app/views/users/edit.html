@@ -1,0 +1,54 @@
+{% extends 'layouts/default.html' %}
+{% import 'macros.html' as macros %}
+
+{% block embed %}
+
+<div class="page-header">
+  <h1>
+    Edit
+    <a href="{{ user.url }}" style="color: #333;">
+      {{ user.uname }}
+    </a>
+  </h1>
+
+  <a href="{{ user.url }}">&larr; Back to Profile</a>
+</div>
+
+<div class="row">
+  <div class="col-lg-6 col-lg-offset-3">
+    <form action="{{ user.url }}" method="POST">
+      <input type="hidden" name="_method" value="PUT">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="form-group">
+            <label for="email-input">Email</label>
+            <input type="text" name="email" value="{{ user.email or '' }}" id="email-input" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="inputCurrentPassword" class="control-label">Current Password</label>
+            <input type="password" name="currentpassword" id="currentpassword-input" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword" class="control-label">Password</label>
+            <input type="password" name="password1" id="password1-input" class="form-control" >
+            <div class="help-block">
+              Must be at least 6 chars long
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputConfirmPassword" class="control-label">Confirm Password</label>
+            <input type="password" name="password2" id="password2-input" class="form-control" >
+          </div>
+        </div>
+        <div class="panel-footer text-right">
+          <button type="submit" class="btn btn-default">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

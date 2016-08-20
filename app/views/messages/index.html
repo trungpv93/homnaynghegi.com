@@ -1,0 +1,107 @@
+{% extends 'layouts/default.html' %}
+{% import 'macros.html' as macros %}
+
+{% block embed %}
+
+  <div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+
+      <form action="/messages" method="POST">
+        <div class="panel panel-primary" style="border: none;">
+          <div class="panel-body">
+            <p class="lead text-center">Leave a message</p>
+
+            <div class="form-group">
+              <textarea id="markup-input"
+                        class="form-control"
+                        rows="4"
+                        name="markup"
+                        placeholder="Click here and begin typing..."
+                        required
+                        maxlength="300"
+              >{{ ctx.flash.params.markup or '' }}</textarea>
+              <div class="help-block">
+                Note: There is a 5 second ratelimit.
+              </div>
+            </div>
+
+            {% if config.RECAPTCHA_SYSTEM_ONLINE %}
+              <div class="form-group text-center">
+                <div class="g-recaptcha recaptcha-center" data-sitekey="{{ recaptchaSitekey }}" data-callback="recaptchaSuccessCallback"></div>
+              </div>
+            {% else %}
+              <div class="alert alert-warning text-center">
+                Recaptcha unconfigured
+              </div>
+            {% endif %}
+
+          </div>
+          <div class="panel-footer text-right">
+            <span class="text-muted" id="markup-counter">
+              0/300
+            </span>
+            <button class="btn btn-default disabled" id="message-submit">
+              Submit
+              {% if not ctx.currUser %}
+                anonymously
+              {% else %}
+                as {{ ctx.currUser.uname }}
+              {% endif %}
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <h2>Recent Messages</h2>
+
+      {% if messages.length == 0 %}
+        No messages. Wanna be the first?
+      {% endif %}
+
+      {% if messages.length > 0 %}
+        {% for message in messages %}
+          {{ macros.renderMessagePanel(ctx, message, '/') }}
+        {% endfor %}
+        <p class="text-center">
+          <div class="col-lg-6 col-lg-offset-3">
+            <a href="/messages/list" class="btn btn-default btn-block">
+              View All &rarr;
+            </a>
+          </div>
+        </p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+
+  <script type="text/javascript">
+    // Add confirmation pop-up to each message's delete button
+    $('.delete-message-btn').on('click', function(e) {
+      var result = confirm('Are you sure?');
+      if (!result) {
+        e.preventDefault();
+        return false;
+      }
+    });
+  </script>
+
+  <script type="text/javascript">
+    function recaptchaSuccessCallback() {
+      $('#message-submit')
+        .removeClass('disabled')
+        .addClass('btn-success');
+    }
+  </script>
+
+  <script type="text/javascript">
+    var $input = $('#markup-input').counter('#markup-counter', 3, 300);
+
+    if ($input.val().length > 0) {
+      $input.focusEnd();
+    }
+  </script>
+
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
