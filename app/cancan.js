@@ -26,7 +26,7 @@ exports.can = function(user, action, target) {
     // Only admins and mods can read hidden messages
     if (target.is_hidden) return _.includes(['ADMIN', 'MOD'], user && user.role);
     return false;
-  case 'READ_URL': // target is message
+  case 'READ_POST': // target is message
     assert(target);
     // Anyone can see a message as long as it's not hidden
     if (!target.is_deleted) return true;
@@ -64,7 +64,7 @@ exports.can = function(user, action, target) {
     // Any user can unless they are banned
     if (user.role === 'BANNED') return false;
     return true;
-  case 'CREATE_URL': // no target
+  case 'CREATE_POST': // no target
     // Guests can
     if (!user) return true;
     // Any user can unless they are banned
@@ -95,7 +95,7 @@ exports.can = function(user, action, target) {
     // Only mods and admins
     if (_.includes(['ADMIN', 'MOD'], user.role)) return true;
     return false;
-  case 'UPDATE_URL_STATE': // target is URL
+  case 'UPDATE_POST_STATE': // target is POST
     assert(target);
     // Guests never can
     if (!user) return false;

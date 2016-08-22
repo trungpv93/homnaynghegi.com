@@ -7,15 +7,23 @@ const db = require('./db');
 
 //
 // Some things are too wasteful to calculate on every request,
-// but too trivial to extract into a real caching layer. 
+// but too trivial to extract into a real caching layer.
 // e.g. SELECT COUNT(*)
 // For these things, a setInterval on each server gets the job
-// done. 
+// done.
 //
 
 ////////////////////////////////////////////////////////////
 
-module.exports = new IntervalCache({ throwIfKeyNotFound: true })
-  .every('messages-count', { mins: 1 }, co.wrap(db.getMessagesCount), 0)
-  .every('users-count', { mins: 1 }, co.wrap(db.getUsersCount), 0)
-  ;
+module.exports = new IntervalCache({
+        throwIfKeyNotFound: true
+    })
+    .every('messages-count', {
+        mins: 1
+    }, co.wrap(db.getMessagesCount), 0)
+    .every('users-count', {
+        mins: 1
+    }, co.wrap(db.getUsersCount), 0)
+    .every('posts-count', {
+        mins: 1
+    }, co.wrap(db.getPostsCount), 0);

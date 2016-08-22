@@ -1,3 +1,4 @@
 node_modules
 .env
 sftp-config.json
+.remote-sync.json

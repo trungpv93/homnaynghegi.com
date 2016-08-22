@@ -2,7 +2,7 @@
 
 // 3rd
 const Router = require('koa-router');
-const debug = require('debug')('app:routes:urls');
+const debug = require('debug')('app:routes:posts');
 const uuid = require('uuid');
 const shortid = require('shortid');
 const Metascraper = require('metascraper');
@@ -21,10 +21,10 @@ const router = new Router();
 
 // Routes
 
-// Create url
-router.post('/urls', mw.ratelimit(), mw.ensureRecaptcha, function * () {
+// Create post
+router.post('/post', mw.ratelimit(), mw.ensureRecaptcha, function * () {
   // AUTHZ
-  this.assertAuthorized(this.currUser, 'CREATE_URL');
+  this.assertAuthorized(this.currUser, 'CREATE_POST');
   // VALIDATE
   var $errURL = 'Must provide a url';
   this.validateBody('url')
@@ -34,24 +34,26 @@ router.post('/urls', mw.ratelimit(), mw.ensureRecaptcha, function * () {
     .check(urlRegex({exact: true}).test(this.request.body.url), $errURL);
 
 	const metadata = yield Metascraper.scrapeUrl(this.vals.url);
-  // SAVE
-  yield db.insertURL({
+  // SAVE Post
+  const post = yield db.insertPost({
     user_id: this.currUser && this.currUser.id,
     uid: uuid.v4(),
-    url: this.vals.url,
-    shortlink: shortid.generate(),	
+    shortlink: shortid.generate(),
     ip_address: this.request.ip,
     user_agent: this.headers['user-agent'],
   	host: url.parse(this.vals.url).hostname,
   	title: (metadata.title === null) ? '' : metadata.title,
-  	url_author: (metadata.author === null) ? '' : metadata.author,
-  	url_date: (metadata.date === null) ? null : metadata.date,
-  	url_description: (metadata.description === null) ? '' : metadata.description,
-  	url_image: (metadata.image === null) ? '' : metadata.image,
-  	url_publisher: (metadata.publisher === null) ? '' : metadata.publisher,
-  	text: (metadata.description === null) ? '' : metadata.description,
+  	content: (metadata.description === null) ? '' : metadata.description,
   	is_private: false,
   });
+  //Save URL user input
+  yield db.insertPostMeta(post.id, 'userURL', this.vals.url);
+
+  //Save metadata
+  for(var meta in metadata){
+    yield db.insertPostMeta(post.id, meta, (metadata[meta] === null) ? '' : metadata[meta]);
+  }
+
   // RESPOND
   this.flash = { message: ['success', 'URL Created!'] };
   this.redirect('/');

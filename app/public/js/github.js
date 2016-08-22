@@ -4,17 +4,17 @@
  */
 function HubTab() {
 
-    var trendingRequest = false,              // To make sure that there are no parallel requests
+    var trendingRequest = false, // To make sure that there are no parallel requests
         repoGroupSelector = '.content-batch', // Batch of repositories
-        filterSelector = '.repos-filter',     // Selector that matches every repo filter on page
-        mainContainer = '.main-content',      // Main container div
-        dateHead = '.date-head',              // Heading item for the batch of repositories
-        dateAttribute = 'date',               // Date attribute on the date head of batch
+        filterSelector = '.repos-filter', // Selector that matches every repo filter on page
+        mainContainer = '.main-content', // Main container div
+        dateHead = '.date-head', // Heading item for the batch of repositories
+        dateAttribute = 'date', // Date attribute on the date head of batch
         // token = 'a1a420cbad0a4d3eccda',    // API token. Don't grin, it's a dummy
-        languageFilter = '#language',         // Filter for repositories language
-        dateFilter = '#date-hunt',            // Date jump filter i.e. weekly, monthly or yearly
-        tokenStorageKey = 'githunt_token',    // Storage key for the github token
-        requestCount = 0,                     // Track the count of how many times the refresh was tried
+        languageFilter = '#language', // Filter for repositories language
+        dateFilter = '#date-hunt', // Date jump filter i.e. weekly, monthly or yearly
+        tokenStorageKey = 'githunt_token', // Storage key for the github token
+        requestCount = 0, // Track the count of how many times the refresh was tried
         reposApiUrl = 'https://api.github.com/search/repositories';
 
     /**
@@ -28,48 +28,48 @@ function HubTab() {
         var html = '';
 
         $i = 0;
-        $(repositories).each(function (index, repository) {
+        $(repositories).each(function(index, repository) {
             // Make the name and description XSS safe
             var repFullName = $('<div>').text(repository.full_name).html();
             var repFullDesc = $('<div>').text(repository.description).html();
 
-            if(repFullDesc === '') {
+            if (repFullDesc === '') {
                 repFullDesc = '<i>No description or website provided</i>';
             }
-            
-            if($i%2 === 0){
-              html += '<div class="row">';  
-            }
-            
-            html += '<div class="col-md-6">';
-          html += '<div class="well well-sm repo-box">';
+
+            if ($i % 2 === 0) {
                 html += '<div class="row">';
-                    html += '<div class="col-xs-3 col-sm-3 col-lg-3 col-md-3 text-center">';
-                        html += '<img src="' + repository.owner.avatar_url + '" alt="bootsnipp" class="img-rounded img-responsive" />';
-                    html += '</div>';
-                    html += '<div class="col-xs-9 col-sm-9 col-lg-9 col-md-9 section-box">';
-                        html += '<a href="' + repository.html_url + '" target="_blank"><h4>';
-                            html += repFullName + ' <span class="glyphicon glyphicon-new-window">';
-                            html += '</span>';
-                        html += '</h4></a>';
-                        html += '<p>';
-                            html += repFullDesc + '</p>';
-                        html += '<hr />';
-                        html += '<div class="row rating-desc">';
-                            html += '<div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">';
-                                html += '<i class="fa fa-code-fork"></i> ' + repository.forks_count + '<span class="separator">|</span>';
-                                html += '<i class="fa fa-commenting-o"></i> ' + repository.open_issues + '<span class="separator">|</span>';
-                                html += '<i class="fa fa-star"></i> ' + repository.stargazers_count;
-                            html += '</div>';
-                        html += '</div>';
-                    html += '</div>';
-                html += '</div>';
-            html += '</div>';
-          html += '</div>';
-            if($i%2 !== 0){
-              html += '</div>';  
             }
-          $i++;
+
+            html += '<div class="col-md-6">';
+            html += '<div class="well well-sm repo-box">';
+            html += '<div class="row">';
+            html += '<div class="col-xs-3 col-sm-3 col-lg-3 col-md-3 text-center">';
+            html += '<img src="' + repository.owner.avatar_url + '" alt="bootsnipp" class="img-rounded img-responsive" />';
+            html += '</div>';
+            html += '<div class="col-xs-9 col-sm-9 col-lg-9 col-md-9 section-box">';
+            html += '<a href="' + repository.html_url + '" target="_blank"><h4>';
+            html += repFullName + ' <span class="glyphicon glyphicon-new-window">';
+            html += '</span>';
+            html += '</h4></a>';
+            html += '<p>';
+            html += repFullDesc + '</p>';
+            html += '<hr />';
+            html += '<div class="row rating-desc">';
+            html += '<div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">';
+            html += '<i class="fa fa-code-fork"></i> ' + repository.forks_count + '<span class="separator">|</span>';
+            html += '<i class="fa fa-commenting-o"></i> ' + repository.open_issues + '<span class="separator">|</span>';
+            html += '<i class="fa fa-star"></i> ' + repository.stargazers_count;
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            if ($i % 2 !== 0) {
+                html += '</div>';
+            }
+            $i++;
         });
 
         var humanDate = moment(lowerDate).fromNow(),
@@ -85,7 +85,7 @@ function HubTab() {
      * Gets the next date range for which repositories need to be fetched
      * @returns {{}}
      */
-    var getNextDateRange = function () {
+    var getNextDateRange = function() {
 
         // Lower limit for when the last repos batch was fetched
         var lastFetched = $(repoGroupSelector).last().find(dateHead).data(dateAttribute),
@@ -107,7 +107,7 @@ function HubTab() {
      * Gets the filters to be passed to API
      * @returns {{queryParams: string, dateRange: {}}}
      */
-    var getApiFilters = function () {
+    var getApiFilters = function() {
         var dateRange = getNextDateRange(),
             language = $(languageFilter).val(),
             langCondition = '';
@@ -120,12 +120,7 @@ function HubTab() {
 
         // If user has set the github token in storage pass that
         // alongside the request.
-        var token = 'da1ad4cd0c76d8ceb259dd5ced247f5635559fbf',
-            apiToken = '';
-
-        if (token) {
-            apiToken = '&access_token=' + token;
-        }
+        var apiToken = '&access_token=' + GITHUB_API_KEY;
 
         return {
             queryParams: '?sort=stars&order=desc&q=' + langCondition + 'created:"' + dateRange.lower + ' .. ' + dateRange.upper + '"' + apiToken,
@@ -136,7 +131,7 @@ function HubTab() {
     /**
      * Saves the hunt result in localstorage to avoid requests on each tab change
      */
-    var saveHuntResult = function () {
+    var saveHuntResult = function() {
 
         var huntResults = $('.main-content').html();
         if (!huntResults) {
@@ -149,7 +144,7 @@ function HubTab() {
      * Fetches the trending repositories based upon the filters applied
      * @returns {boolean}
      */
-    var fetchTrendingRepos = function () {
+    var fetchTrendingRepos = function() {
 
         // If there is some request, already in progress or there was
         // an error, do not allow further requests.
@@ -157,18 +152,21 @@ function HubTab() {
             return false;
         }
 
+        var total_count = 0;
+
         var filters = getApiFilters(),
             url = reposApiUrl + filters.queryParams;
 
         trendingRequest = $.ajax({
             url: url,
             method: 'get',
-            beforeSend: function () {
+            beforeSend: function() {
                 $('.loading-more').removeClass('hide');
             },
-            success: function (data) {
+            success: function(data) {
                 var finalHtml = generateReposHtml(data.items, filters.dateRange.lower, filters.dateRange.upper);
                 $(mainContainer).append(finalHtml);
+                total_count = data.total_count;
             },
             error: function(xhr, status, error) {
                 var error = JSON.parse(xhr.responseText),
@@ -183,11 +181,16 @@ function HubTab() {
                     $('.main-content').replaceWith('Oops! Could you please refresh the page.');
                 }
             },
-            complete: function () {
+            complete: function() {
                 trendingRequest = false;
                 $('.loading-more').addClass('hide');
 
                 saveHuntResult();
+
+                if (total_count == 0) {
+                    // Refresh the repositories
+                    fetchTrendingRepos();
+                }
             }
         });
     };
@@ -195,17 +198,17 @@ function HubTab() {
     /**
      * Perform all the UI bindings
      */
-    var bindUI = function () {
+    var bindUI = function() {
 
         // Bind the scroll to fetch repositories when bottom reached
-        $(window).on('scroll', function () {
+        $(window).on('scroll', function() {
             if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
                 fetchTrendingRepos();
             }
         });
 
         // On change of repository filters
-        $(document).on('change', filterSelector, function () {
+        $(document).on('change', filterSelector, function() {
 
             // Increase the request count so that refresh is enabled
             requestCount++;
@@ -223,7 +226,7 @@ function HubTab() {
         /**
          * initialize the hub page
          */
-        init: function () {
+        init: function() {
             bindUI();
             this.refresh();
         },
@@ -231,13 +234,13 @@ function HubTab() {
         /**
          * Refresh the listing and filters
          */
-        refresh: function () {
+        refresh: function() {
             fetchTrendingRepos();
         }
     };
 }
 
-$(function () {
+$(function() {
     var hubTab = new HubTab();
     hubTab.init();
 });

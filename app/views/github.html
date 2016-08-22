@@ -1,18 +1,22 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{title}}</title>
-  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/flatly/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
- 
-  <link rel="stylesheet" type="text/css" href="/css/github.css" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/flatly/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="/css/github.css" />
+    <script type="text/javascript">
+        var GITHUB_API_KEY = '{{githubAPIKey}}';
+    </script>
 </head>
+
 <body>
-  <nav class="navbar navbar-default navbar-static-top">
+    <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
 
@@ -32,23 +36,23 @@
         </div>
     </nav>
 
-  <div class="container">
-  <div class="row">
-    <div class="col-md-6"></div>
-    <div class="col-md-3">
-      <div class="form-group">
-      <select name="date-hunt" id="date-hunt" class="form-control repos-filter">
-        <option value="day" selected>Daily</option>
-        <option value="week" >Weekly</option>
-        <option value="month">Monthly</option>
-        <option value="year">Yearly</option>
-      </select>
-      </div>
-      </div>
-    <div class="col-md-3">
-      <div class="form-group">
-      <select name="language" id="language" class="form-control repos-filter">
-                  <option value="">All Languages</option>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <select name="date-hunt" id="date-hunt" class="form-control repos-filter">
+                        <option value="day" selected>Daily</option>
+                        <option value="week">Weekly</option>
+                        <option value="month">Monthly</option>
+                        <option value="year">Yearly</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <select name="language" id="language" class="form-control repos-filter">
+                        <option value="">All Languages</option>
                         <option value="ABAP">ABAP</option>
                         <option value="ActionScript">ActionScript</option>
                         <option value="Ada">Ada</option>
@@ -354,29 +358,30 @@
                         <option value="Yacc">Yacc</option>
                         <option value="Zephir">Zephir</option>
                         <option value="Zimpl">Zimpl</option>
-                </select>
-    </div>    
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="main-content">
-        
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="loading-more hide">
-            <h3>Wait, hunting...</h3>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="main-content">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="loading-more hide">
+                    <h3>Wait, hunting...</h3>
+                </div>
+            </div>
         </div>
     </div>
-  </div>
-</div>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
-  
-<script type="text/javascript" src="/js/github.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
+
+    <script type="text/javascript" src="/js/github.js"></script>
 </body>
+
 </html>

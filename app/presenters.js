@@ -2,6 +2,8 @@
 // 3rd party
 const assert = require('better-assert');
 const _ = require('lodash');
+const co = require('co');
+const db = require('./db');
 
 // Presents are functions that take data from the database
 // and extend/improve it for the view layer. They're used in routes.
@@ -17,29 +19,51 @@ const _ = require('lodash');
 
 ////////////////////////////////////////////////////////////
 
-exports.presentUser = function (x) {
-  if (!x) return;
-  // Fix embedded json representation
-  if (_.isString(x.created_at)) x.created_at = new Date(x.created_at);
-  x.url = `/users/${x.uname}`;
-  return x;
+exports.presentUser = function(x) {
+    if (!x) return;
+    // Fix embedded json representation
+    if (_.isString(x.created_at)) x.created_at = new Date(x.created_at);
+    x.url = `/users/${x.uname}`;
+    return x;
 };
 
 ////////////////////////////////////////////////////////////
 
-exports.presentSession = function (x) {
-  if (!x) return;
-  // Fix embedded json representation
-  if (_.isString(x.created_at)) x.created_at = new Date(x.created_at);
-  if (_.isString(x.expired_at)) x.expired_at = new Date(x.expired_at);
-  return x;
+exports.presentSession = function(x) {
+    if (!x) return;
+    // Fix embedded json representation
+    if (_.isString(x.created_at)) x.created_at = new Date(x.created_at);
+    if (_.isString(x.expired_at)) x.expired_at = new Date(x.expired_at);
+    return x;
 };
 
 ////////////////////////////////////////////////////////////
 
-exports.presentMessage = function (x) {
-  if (!x) return;
-  exports.presentUser(x.user);
-  x.url = `/messages/${x.id}`;
-  return x;
+exports.presentMessage = function(x) {
+    if (!x) return;
+    exports.presentUser(x.user);
+    x.url = `/messages/${x.id}`;
+    return x;
+};
+
+////////////////////////////////////////////////////////////
+
+exports.presentPost = function * (x) {
+    if (!x) return;
+    exports.presentUser(x.user);
+    yield exports.presentPostMeta(x);
+    x.url = `/${x.id}`;
+    return x;
+};
+
+exports.presentPostMeta = function * (x) {
+    if (!x) return;
+    const postMeta = yield db.getPostMetasByPost(x.id);
+    //build string Json
+    var metaObj = {};
+    for(var meta in postMeta){
+      metaObj[postMeta[meta].key] = postMeta[meta].value;
+    }
+    x.meta = metaObj;
+    return x;
 };

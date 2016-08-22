@@ -1,28 +1,19 @@
-
-{#
-  Put your view macros here.
-
-  If you find yourself repeating the same markup a lot, consider wrapping
-  it in a macro. They're basically view helper functions that output HTML.
-#}
-
 {% macro renderMessagePanel(ctx, message, redirectTo) %}
-  {% if can(ctx.currUser, 'READ_MESSAGE', message) %}
-    <div class="panel panel-primary">
-      <div class="panel-heading text-right">
+{% if can(ctx.currUser,'READ_MESSAGE', message) %}
+<div class="panel panel-primary">
+    <div class="panel-heading text-right">
 
         {% if can(ctx.currUser, 'UPDATE_MESSAGE_STATE', message) %}
-          <form action="/messages/{{ message.id }}" method="POST">
+        <form action="/messages/{{ message.id }}" method="POST">
             <input type="hidden" name="_method" value="PUT">
-            <input type="hidden" name="redirectTo" value="{{ redirectTo }}">
-            {% if message.is_hidden %}
-              <input type="hidden" name="is_hidden" value="false">
-              <button type="submit" class="btn btn-xs btn-default pull-left delete-message-btn">Restore</button>
+            <input type="hidden" name="redirectTo" value="{{ redirectTo }}"> {% if message.is_hidden %}
+            <input type="hidden" name="is_hidden" value="false">
+            <button type="submit" class="btn btn-xs btn-default pull-left delete-message-btn">Restore</button>
             {% else %}
-              <input type="hidden" name="is_hidden" value="true">
-              <button type="submit" class="btn btn-xs btn-default pull-left delete-message-btn">Delete</button>
+            <input type="hidden" name="is_hidden" value="true">
+            <button type="submit" class="btn btn-xs btn-default pull-left delete-message-btn">Delete</button>
             {% endif %}
-          </form>
+        </form>
         {% endif %}
 
         <small class="text-muted">
@@ -39,109 +30,99 @@
             a guest
           {% endif %}
         </small>
-      </div>
-      <div class="panel-body {% if message.is_hidden %}bg-danger{% endif %}" style="max-height: 200px; overflow: auto;">
-        {{ message.markup | escape | nl2br | autolink | safe }}
-      </div>
     </div>
-  {% endif %}
+    <div class="panel-body {% if message.is_hidden %}bg-danger{% endif %}" style="max-height: 200px; overflow: auto;">
+        {{ message.markup | escape | nl2br | autolink | safe }}
+    </div>
+</div>
+{% endif %}
 {% endmacro %}
 
-{% macro renderURLPanel(ctx, url, redirectTo) %}
-  {% if can(ctx.currUser, 'READ_URL', url) %}
-
-    <div class="Item">
-      <div class="row">
+{% macro renderPostPanel(ctx, post, redirectTo) %}
+{% if can(ctx.currUser, 'READ_POST', post) %}
+<div class="Item">
+    <div class="row">
         <div class="Vote">
-          <i class="fa fa-angle-up Vote-Arrow Vote-Arrow-Up" aria-hidden="true"></i>
-          <div class="Vote-Columns">
-            <div class="Vote-Column">
-              100
+            <i class="fa fa-angle-up Vote-Arrow Vote-Arrow-Up" aria-hidden="true"></i>
+            <div class="Vote-Columns">
+                <div class="Vote-Column">
+                    0
+                </div>
             </div>
-          </div>
-          <i class="fa fa-angle-down  Vote-Arrow  Vote-Arrow-Down" aria-hidden="true"></i>
+            <i class="fa fa-angle-down  Vote-Arrow  Vote-Arrow-Down" aria-hidden="true"></i>
         </div>
         <div class="media">
-          <div class="media-left">
-            <a href="#">
-              <img class="media-object img-rounded" src="{{ url.url_image }}" data-holder-rendered="true" style="width: 105px;">
-            </a>
-          </div>
-          <div class="media-body">
-            <div class="Detail-Item">
-              <a href="./{{ url.shortlink }}" target="_blank">
-                <h4>{{ url.title | escape | nl2br | safe }}<span class="Span_Host"> ({{url.host}}) - {{url.click_via_short_link}} </span></h4>
-              </a>
-              <p>{{ url.text | escape | nl2br | safe }} </p>
-              <hr />
-              <div class="rating-desc">
-                <a href="#"><i class="fa fa-eye" aria-hidden="true"></i> 10 views</a><span class="separator">|</span>
-                <a href="#"><i class="fa fa-comments" aria-hidden="true"></i> 10 comments</a><span class="separator">|</span>
-                <a href="#"><i class="fa fa-share-alt" aria-hidden="true"></i> share </a><span class="separator">|</span>
-                <a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i> save </a><span class="separator">|</span>
-                <a href="#"><i class="fa fa-ban" aria-hidden="true"></i> hide </a><span class="separator">|</span>
-                <a href="#"><i class="fa fa-flag" aria-hidden="true"></i> report </a>
-                {% if can(ctx.currUser, 'UPDATE_URL_STATE', url) %}
-                    {% if url.is_deleted %}
-                      <span class="separator">|</span><a href="#"><i class="fa fa-undo" aria-hidden="true"></i> restore </a>
-                    {% else %}
-                      <span class="separator">|</span><a href="#"><i class="fa fa-trash-o" aria-hidden="true"></i> delete </a>
-                    {% endif %}
-                {% endif %}
-                <span class="separator">|</span>
-                <small class="text-muted">
-                    <abbr class="timeago" title="{{ url.created.toISOString() }}">
-                      {{ url.created|formatDate }}
+            <div class="media-left">
+                <a href="#">
+                    <img class="media-object img-rounded" src="{{post.meta.image}}" data-holder-rendered="true" style="width: 105px;">
+                </a>
+            </div>
+            <div class="media-body">
+                <div class="Detail-Item">
+                    <a href="./{{ post.shortlink }}" target="_blank">
+                        <h4>{{ post.title | escape | nl2br | safe }}<span class="Span_Host"> ({{post.host}}) </span></h4>
+                    </a>
+                    <p>{{ post.content | escape | nl2br | safe }} </p>
+                    <hr />
+                    <div class="rating-desc">
+                        <a href="#"><i class="fa fa-eye" aria-hidden="true"></i> {{post.click_via_short_link}} views</a><span class="separator">|</span>
+                        <a href="#"><i class="fa fa-comments" aria-hidden="true"></i> 10 comments</a><span class="separator">|</span>
+                        <a href="#"><i class="fa fa-share-alt" aria-hidden="true"></i> share </a><span class="separator">|</span>
+                        <a href="#"><i class="fa fa-bookmark-o" aria-hidden="true"></i> save </a><span class="separator">|</span>
+                        <a href="#"><i class="fa fa-ban" aria-hidden="true"></i> hide </a><span class="separator">|</span>
+                        <a href="#"><i class="fa fa-flag" aria-hidden="true"></i> report </a> {% if can(ctx.currUser, 'UPDATE_POST_STATE', post) %} {% if post.is_deleted %}
+                        <span class="separator">|</span><a href="#"><i class="fa fa-undo" aria-hidden="true"></i> restore </a> {% else %}
+                        <span class="separator">|</span><a href="#"><i class="fa fa-trash-o" aria-hidden="true"></i> delete </a> {% endif %} {% endif %}
+                        <span class="separator">|</span>
+                        <small class="text-muted">
+                    <abbr class="timeago" title="{{ post.created.toISOString() }}">
+                      {{ post.created|formatDate }}
                     </abbr>
                     by
-                    {% if url.user %}
-                      <a href="{{ url.user.url }}">{{ url.user.uname }}</a>
+                    {% if post.user %}
+                      <a href="{{ post.user.url }}">{{ post.user.uname }}</a>
                     {% else %}
                       a guest
                     {% endif %}
                 </small>
-              </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  {% endif %}
+</div>
+{% endif %}
 {% endmacro %}
-
 
 {% macro renderPaginator(paginator) %}
-  {% if paginator %}
-    {# TODO: Extract to CSS file #}
-    <style>
-     .pagination > li > span {
-       color: #777;
-       border-top: 0;
-       border-bottom: 0;
-       border-left: 1px solid #ddd;
-       border-right: 1px solid #ddd;
-     }
-     .pagination > li > span:hover {
-       color: #777;
-       background-color: transparent;
-     }
-    </style>
-    <nav class="paginator" style="text-align:center;">
-      <ul class="pagination">
-        {% for pg in paginator %}
-          {% if pg.kind == 'BUTTON' %}
-            <li class="{% if pg.isActive %}active{% endif %}">
-              <a href="{{ pg.href }}">
+{% if paginator %} {# TODO: Extract to CSS file #}
+<style>
+    .pagination> li> span {
+        color: #777;
+        border-top: 0;
+        border-bottom: 0;
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+    }
+
+    .pagination> li> span:hover {
+        color: #777;
+        background-color: transparent;
+    }
+</style>
+<nav class="paginator" style="text-align:center;">
+    <ul class="pagination">
+        {% for pg in paginator %} {% if pg.kind == 'BUTTON' %}
+        <li class="{% if pg.isActive %}active{% endif %}">
+            <a href="{{ pg.href }}">
                 <span aria-hidden="true">{{ pg.text }}</span>
-              </a>
-            </li>
-          {% elif pg.kind == 'SEPARATOR' %}
-            <li class="disabled">
-              <a href="#"><span aria-hidden="true">...</span></a>
-            </li>
-          {% endif %}
-        {% endfor %}
-      </ul>
-    </nav>
-  {% endif %}
-{% endmacro %}
+            </a>
+        </li>
+        {% elif pg.kind == 'SEPARATOR' %}
+        <li class="disabled">
+            <a href="#"><span aria-hidden="true">...</span></a>
+        </li>
+        {% endif %} {% endfor %}
+    </ul>
+</nav>
+{% endif %} {% endmacro %}
